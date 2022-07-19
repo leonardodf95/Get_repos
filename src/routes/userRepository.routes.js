@@ -1,16 +1,17 @@
 import {Router} from 'express'
-import { gitHub } from '../config/GitHubAPI.js';
+import User from '../model/User.js';
 
 const userRepository = Router();
 
 userRepository.get('/:user', async (req, res) =>{
     try {
+        const {page} = req.query
         const {user} = req.params;
-        const repos = await gitHub.get(`/${user}/repos`)
-        res.status(200).send(repos.data)
+        const repos = await User.getUserRepositorys(user, page)
+        res.status(200).send(repos)
 
     } catch (error) {
-        res.status(404).send('Usuário não encontrado')
+        res.status(404).send(error.message)
     }
 })
 
